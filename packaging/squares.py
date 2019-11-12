@@ -49,15 +49,55 @@ def convert_numbers(list_of_strings):
     return [float(number_string) for number_string in all_numbers]
 
 
+
+from argparse import ArgumentParser
+import numpy as np
+
 if __name__ == "__main__":
-    with open("numbers.txt", "r") as numbers_file:
-        numbers_strings = numbers_file.readlines()
+
+    parser = ArgumentParser()
+    parser.add_argument("numbers", help="user input for selected numbers file", type=str)
+    parser.add_argument("--weights", help="user input for selected weights file", type=str)
+
+    args = parser.parse_args()
+
+
     # TODO Can we make this optional, so that we don't need a weights file?
-    with open("weights.txt", "r") as weights_file:
-        weight_strings = weights_file.readlines()
-    numbers = convert_numbers(numbers_strings)
-    weights = convert_numbers(weight_strings)
-    # TODO Can we add the option of computing the square root of this result?
-    result = average_of_squares(numbers, weights)
-    # TODO Can we write the result in a file instead of printing it?
-    print(result)
+    if args.weights:
+        with open(args.weights, "r") as weights_file:
+            weight_strings = weights_file.readlines()
+        numbers = convert_numbers(numbers_strings)
+        weights = convert_numbers(weight_strings)
+        # TODO Can we add the option of computing the square root of this result?
+        result = average_of_squares(numbers, weights)
+        # TODO Can we write the result in a file instead of printing it?
+        print(result)
+
+
+    #no weights file specified
+    else:
+        with open(args.numbers, "r") as numbers_file:
+            numbers_strings = numbers_file.readlines()
+
+        numbers = convert_numbers(numbers_strings)
+
+        #if no weights file specified have all weights equal to 1
+        weights = np.ones(len(numbers))
+
+        result = average_of_squares(numbers, weights)
+        result_sqrt = np.sqrt(average_of_squares(numbers, weights))
+
+        #open file to write results to
+        resultFile = open("resultFile_noWeights.txt", 'w')
+
+        resultFile.write("%s\t" % "Original")
+        resultFile.write("%s\n" % "Squre-root of Result")
+
+        #write original result
+        print(result, "Original Result")
+        resultFile.write("%s\t\t" % result)
+
+        #write squre rooted result
+        print(result_sqrt, "Square-root of result")
+        resultFile.write("%s\n" % result_sqrt)
+
