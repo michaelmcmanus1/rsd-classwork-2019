@@ -57,10 +57,13 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
     parser.add_argument("numbers", help="user input for selected numbers file", type=str)
-    parser.add_argument("--weights", help="user input for selected weights file", type=str)
+    parser.add_argument("--weights", "-w", required=False, default=None, help="user input for selected weights file")
+    #parser.add_argument("--root", "-r", type=str, default=None, required=False, help="user input for taking the root of the result")
 
     args = parser.parse_args()
-
+    
+    with open(args.numbers, "r") as numbers_file:
+            numbers_strings = numbers_file.readlines()
 
     # TODO Can we make this optional, so that we don't need a weights file?
     if args.weights:
@@ -76,8 +79,6 @@ if __name__ == "__main__":
 
     #no weights file specified
     else:
-        with open(args.numbers, "r") as numbers_file:
-            numbers_strings = numbers_file.readlines()
 
         numbers = convert_numbers(numbers_strings)
 
